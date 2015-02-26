@@ -56,6 +56,10 @@ module.exports = {
         };
         cordova.exec(successWrapper, failure, 'BLE', 'scan', [services, seconds]);
     },
+    
+    stop: function (success, failure) {
+        cordova.exec(success, failure, 'BLE', 'stop', []);
+    },
 
     // this will probably be removed
     list: function (success, failure) {
