@@ -239,7 +239,10 @@
         [serviceUUIDs addObject:serviceUUID];
     }
 
-    [manager scanForPeripheralsWithServices:serviceUUIDs options:nil];
+    // [manager scanForPeripheralsWithServices:serviceUUIDs options:nil];
+    [manager scanForPeripheralsWithServices:serviceUUIDs options:@{
+        CBCentralManagerScanOptionAllowDuplicatesKey: YES
+    }];
 
     [NSTimer scheduledTimerWithTimeInterval:[timeoutSeconds floatValue]
                                      target:self
