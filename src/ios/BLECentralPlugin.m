@@ -240,9 +240,9 @@
     }
 
     // [manager scanForPeripheralsWithServices:serviceUUIDs options:nil];
-    [manager scanForPeripheralsWithServices:serviceUUIDs options:@{
-        CBCentralManagerScanOptionAllowDuplicatesKey: YES
-    }];
+    NSMutableDictionary *dictionary = [[NSMutableDictionary alloc] init];
+    [dictionary setObject:YES forKey:CBCentralManagerScanOptionAllowDuplicatesKey];
+    [manager scanForPeripheralsWithServices:serviceUUIDs options:dictionary];
 
     [NSTimer scheduledTimerWithTimeInterval:[timeoutSeconds floatValue]
                                      target:self
