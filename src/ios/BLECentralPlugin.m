@@ -267,6 +267,25 @@
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
 
+- (void)stop:(CDVInvokedUrlCommand*)command {
+    NSLog(@"stop");
+    
+    NSString* callbackId = [command callbackId];
+    NSString* msg = @"true";
+    
+    [manager stopScan];
+
+    if (discoverPeripherialCallbackId) {
+        discoverPeripherialCallbackId = nil;
+    }
+    
+    CDVPluginResult* result = [CDVPluginResult
+                               resultWithStatus:CDVCommandStatus_OK
+                               messageAsString:msg];
+    
+    [self.commandDelegate sendPluginResult:result callbackId:callbackId];
+}
+
 #pragma mark - timers
 
 -(void)stopScanTimer:(NSTimer *)timer {
