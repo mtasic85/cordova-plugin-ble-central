@@ -288,7 +288,8 @@ public class BLECentralPlugin extends CordovaPlugin implements BluetoothAdapter.
     public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
 
         String address = device.getAddress();
-
+        
+        /*
         if (!peripherals.containsKey(address)) {
 
             Peripheral peripheral = new Peripheral(device, rssi, scanRecord);
@@ -304,6 +305,16 @@ public class BLECentralPlugin extends CordovaPlugin implements BluetoothAdapter.
             // this isn't necessary
             Peripheral peripheral = peripherals.get(address);
             peripheral.updateRssi(rssi);
+        }
+        */
+        
+        Peripheral peripheral = new Peripheral(device, rssi, scanRecord);
+        peripherals.put(device.getAddress(), peripheral);
+
+        if (discoverCallback != null) {
+            PluginResult result = new PluginResult(PluginResult.Status.OK, peripheral.asJSONObject());
+            result.setKeepCallback(true);
+            discoverCallback.sendPluginResult(result);
         }
 
         // TODO offer option to return duplicates
