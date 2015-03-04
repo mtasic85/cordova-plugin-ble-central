@@ -225,6 +225,27 @@
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
 
+- (void)onEnabledChange:(CDVInvokedUrlCommand*)command {
+    NSString* callbackId = [command callbackId];
+    self.onEnabledChangeCallbackId = [command.callbackId copy];
+}
+
+- (void)_onEnabledChange {
+    if (self.onEnabledChangeCallbackId == nil) {
+        return;
+    }
+    
+    int bluetoothState = [manager state];
+    BOOL enabled = bluetoothState == CBCentralManagerStatePoweredOn;
+    
+    CDVPluginResult * result = [CDVPluginResult
+                               resultWithStatus:CDVCommandStatus_OK
+                               messageAsBool:enabled];
+    
+    [result setKeepCallbackAsBool:TRUE];
+    [self.commandDelegate sendPluginResult:result callbackId:self.onEnabledChangeCallbackId];
+}
+
 - (void)scan:(CDVInvokedUrlCommand*)command {
 
     NSLog(@"scan");
@@ -318,6 +339,7 @@
 - (void)centralManagerDidUpdateState:(CBCentralManager *)central
 {
     NSLog(@"Status of CoreBluetooth central manager changed %ld %@", central.state, [self centralManagerStateToString: central.state]);
+    [self _onEnabledChange];
 }
 
 - (void)centralManager:(CBCentralManager *)central didConnectPeripheral:(CBPeripheral *)peripheral {
