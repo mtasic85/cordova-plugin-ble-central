@@ -55,6 +55,8 @@
 - (void)isEnabled:(CDVInvokedUrlCommand *)command;
 - (void)isConnected:(CDVInvokedUrlCommand *)command;
 
+- (void)onEnabledChange:(CDVInvokedUrlCommand *)command;
+
 @end
 
 #endif
