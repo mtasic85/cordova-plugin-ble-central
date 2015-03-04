@@ -45,6 +45,8 @@
     writeCallbacks = [NSMutableDictionary new];
     notificationCallbacks = [NSMutableDictionary new];
     stopNotificationCallbacks = [NSMutableDictionary new];
+    
+    self.onEnabledChangeCallbackId = nil;
 }
 
 #pragma mark - Cordova Plugin Methods
