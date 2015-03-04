@@ -126,6 +126,9 @@ module.exports = {
 
     isEnabled: function (success, failure) {
         cordova.exec(success, failure, 'BLE', 'isEnabled', []);
+    },
+    
+    onEnabledChange: function (success, failure) {
+        cordova.exec(success, failure, 'BLE', 'onEnabledChange', []);
     }
-
 };
