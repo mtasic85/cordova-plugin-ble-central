@@ -36,6 +36,7 @@
 
 @property (strong, nonatomic) NSMutableSet *peripherals;
 @property (strong, nonatomic) CBCentralManager *manager;
+@property (nonatomic) NSString * onEnabledChangeCallbackId;
 
 - (void)scan:(CDVInvokedUrlCommand *)command;
 - (void)stop:(CDVInvokedUrlCommand *)command;
@@ -56,6 +57,7 @@
 - (void)isConnected:(CDVInvokedUrlCommand *)command;
 
 - (void)onEnabledChange:(CDVInvokedUrlCommand *)command;
+- (void)_onEnabledChange;
 
 @end
 
