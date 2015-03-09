@@ -47,6 +47,8 @@
     stopNotificationCallbacks = [NSMutableDictionary new];
     
     self.onEnabledChangeCallbackId = nil;
+    
+    self.discoveredDevices = [NSMutableDictionary new];
 }
 
 #pragma mark - Cordova Plugin Methods
@@ -324,18 +326,33 @@
 #pragma mark - CBCentralManagerDelegate
 
 - (void)centralManager:(CBCentralManager *)central didDiscoverPeripheral:(CBPeripheral *)peripheral advertisementData:(NSDictionary *)advertisementData RSSI:(NSNumber *)RSSI {
-
+    
+    if (!discoverPeripherialCallbackId) {
+        return;
+    }
+    
     [peripherals addObject:peripheral];
     [peripheral setAdvertisementData:advertisementData RSSI:RSSI];
-
-    if (discoverPeripherialCallbackId) {
-        CDVPluginResult *pluginResult = nil;
-        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:[peripheral asDictionary]];
-        NSLog(@"Discovered %@", [peripheral asDictionary]);
-        [pluginResult setKeepCallbackAsBool:TRUE];
-        [self.commandDelegate sendPluginResult:pluginResult callbackId:discoverPeripherialCallbackId];
+    
+    // check when last time seen
+    NSDate * prevSeen = [self.discoveredDevices objectForKey:[peripheral uuidAsString]];
+    NSTimeInterval timeInterval;
+    
+    if (prevSeen) {
+        timeInterval = [prevSeen timeIntervalSinceNow];
+    } else {
+        timeInterval = 0.0;
     }
-
+    
+    [self.discoveredDevices setObject:[NSDate date] forKey:[peripheral uuidAsString]];
+    
+    CDVPluginResult * pluginResult = nil;
+    NSMutableDictionary * msg = [[peripheral asDictionary] mutableCopy];
+    [msg setObject:@(timeInterval) forKey:@"secondsSinceLastTimeSeen"];
+    pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:msg];
+    NSLog(@"Discovered %@", msg);
+    [pluginResult setKeepCallbackAsBool:TRUE];
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:discoverPeripherialCallbackId];
 }
 
 - (void)centralManagerDidUpdateState:(CBCentralManager *)central
