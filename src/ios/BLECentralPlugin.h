@@ -37,6 +37,7 @@
 @property (strong, nonatomic) NSMutableSet *peripherals;
 @property (strong, nonatomic) CBCentralManager *manager;
 @property (nonatomic) NSString * onEnabledChangeCallbackId;
+@property (strong, nonatomic) NSMutableDictionary * discoveredDevices;
 
 - (void)scan:(CDVInvokedUrlCommand *)command;
 - (void)stop:(CDVInvokedUrlCommand *)command;
