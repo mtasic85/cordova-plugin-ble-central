@@ -339,7 +339,8 @@
     NSTimeInterval timeInterval;
     
     if (prevSeen) {
-        timeInterval = [prevSeen timeIntervalSinceNow];
+        timeInterval = -[prevSeen timeIntervalSinceNow];
+        if (timeInterval < 0) timeInterval = -timeInterval;
     } else {
         timeInterval = 0.0;
     }
@@ -353,6 +354,11 @@
     NSLog(@"Discovered %@", msg);
     [pluginResult setKeepCallbackAsBool:TRUE];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:discoverPeripherialCallbackId];
+}
+
+- (void)peripheral:(CBPeripheral *)peripheral didModifyServices:(NSArray *)invalidatedServices
+{
+    NSLog(@">>> didModifyServices");
 }
 
 - (void)centralManagerDidUpdateState:(CBCentralManager *)central
