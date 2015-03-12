@@ -36,6 +36,7 @@ public class BLECentralPlugin extends CordovaPlugin implements BluetoothAdapter.
 
     // actions
     private static final String SCAN = "scan";
+    private static final String STOP = "stop";
     private static final String LIST = "list";
 
     private static final String CONNECT = "connect";
@@ -79,7 +80,11 @@ public class BLECentralPlugin extends CordovaPlugin implements BluetoothAdapter.
             UUID[] serviceUUIDs = parseServiceUUIDList(args.getJSONArray(0));
             int scanSeconds = args.getInt(1);
             findLowEnergyDevices(callbackContext, serviceUUIDs, scanSeconds);
-
+        
+        } else if (action.equals(STOP)) {
+        
+            stop(callbackContext);
+        
         } else if (action.equals(LIST)) {
 
             listKnownDevices(callbackContext);
@@ -273,7 +278,14 @@ public class BLECentralPlugin extends CordovaPlugin implements BluetoothAdapter.
         result.setKeepCallback(true);
         callbackContext.sendPluginResult(result);
     }
-
+    
+    private void stop(CallbackContext callbackContext) {
+        LOG.d(TAG, "Stopping Scan");
+        // BLECentralPlugin.this.bluetoothAdapter.stopLeScan(BLECentralPlugin.this);
+        this.bluetoothAdapter.stopLeScan(this);
+        callbackContext.success();
+    }
+    
     private void listKnownDevices(CallbackContext callbackContext) {
 
         JSONArray json = new JSONArray();
