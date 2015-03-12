@@ -280,7 +280,7 @@ public class BLECentralPlugin extends CordovaPlugin implements BluetoothAdapter.
     }
     
     private void stop(CallbackContext callbackContext) {
-        LOG.d(TAG, "Stopping Scan");
+        // LOG.d(TAG, "Stopping Scan");
         // BLECentralPlugin.this.bluetoothAdapter.stopLeScan(BLECentralPlugin.this);
         this.bluetoothAdapter.stopLeScan(this);
         callbackContext.success();
