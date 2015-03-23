@@ -30,6 +30,9 @@ import org.apache.cordova.PluginResult;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import android.content.Intent;
+import android.content.IntentFilter;
+
 import java.util.*;
 
 public class BLECentralPlugin extends CordovaPlugin implements BluetoothAdapter.LeScanCallback {
@@ -81,7 +84,7 @@ public class BLECentralPlugin extends CordovaPlugin implements BluetoothAdapter.
                 @Override
                 public void onReceive(Context context, Intent intent) {
                     final String action = intent.getAction();
-                    
+
                     if (action.equals(BluetoothAdapter.ACTION_STATE_CHANGED)) {
                         final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE,
                                                              BluetoothAdapter.ERROR);
