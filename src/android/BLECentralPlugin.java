@@ -81,7 +81,7 @@ public class BLECentralPlugin extends CordovaPlugin implements BluetoothAdapter.
             Activity activity = cordova.getActivity();
             BluetoothManager bluetoothManager = (BluetoothManager) activity.getSystemService(Context.BLUETOOTH_SERVICE);
             bluetoothAdapter = bluetoothManager.getAdapter();
-            
+
             // listens BluetoothAdapter state changes
             // http://stackoverflow.com/questions/9693755/detecting-state-changes-made-to-the-bluetoothadapter
             mActivity = this.cordova.getActivity();
@@ -92,7 +92,7 @@ public class BLECentralPlugin extends CordovaPlugin implements BluetoothAdapter.
                 public void onReceive(Context context, Intent intent) {
                     final String action = intent.getAction();
                     LOG.d(TAG, "action = " + action);
-                    
+
                     if (action.equals(BluetoothAdapter.ACTION_STATE_CHANGED)) {
                         final int state = intent.getIntExtra(
                             BluetoothAdapter.EXTRA_STATE,
@@ -103,7 +103,7 @@ public class BLECentralPlugin extends CordovaPlugin implements BluetoothAdapter.
                             case BluetoothAdapter.STATE_OFF:
                                 LOG.d(TAG, "Bluetooth off");
 
-                                if (onEnabledChangeCallback) {
+                                if (onEnabledChangeCallback != null) {
                                     PluginResult result = new PluginResult(PluginResult.Status.OK, "false");
                                     result.setKeepCallback(true);
                                     onEnabledChangeCallback.sendPluginResult(result);
@@ -116,7 +116,7 @@ public class BLECentralPlugin extends CordovaPlugin implements BluetoothAdapter.
                             case BluetoothAdapter.STATE_ON:
                                 LOG.d(TAG, "Bluetooth on");
 
-                                if (onEnabledChangeCallback) {
+                                if (onEnabledChangeCallback != null) {
                                     PluginResult result = new PluginResult(PluginResult.Status.OK, "true");
                                     result.setKeepCallback(true);
                                     onEnabledChangeCallback.sendPluginResult(result);
