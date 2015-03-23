@@ -104,7 +104,7 @@ public class BLECentralPlugin extends CordovaPlugin implements BluetoothAdapter.
                                 LOG.d(TAG, "Bluetooth off");
 
                                 if (onEnabledChangeCallback != null) {
-                                    PluginResult result = new PluginResult(PluginResult.Status.OK, "false");
+                                    PluginResult result = new PluginResult(PluginResult.Status.OK, false);
                                     result.setKeepCallback(true);
                                     onEnabledChangeCallback.sendPluginResult(result);
                                 }
@@ -117,7 +117,7 @@ public class BLECentralPlugin extends CordovaPlugin implements BluetoothAdapter.
                                 LOG.d(TAG, "Bluetooth on");
 
                                 if (onEnabledChangeCallback != null) {
-                                    PluginResult result = new PluginResult(PluginResult.Status.OK, "true");
+                                    PluginResult result = new PluginResult(PluginResult.Status.OK, true);
                                     result.setKeepCallback(true);
                                     onEnabledChangeCallback.sendPluginResult(result);
                                 }
