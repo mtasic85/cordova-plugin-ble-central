@@ -51,13 +51,16 @@ public class BLECentralPlugin extends CordovaPlugin implements BluetoothAdapter.
 
     private static final String IS_ENABLED = "isEnabled";
     private static final String IS_CONNECTED  = "isConnected";
+    private static final String ON_ENABLED_CHANGE  = "onEnabledChange";
 
     // callbacks
     CallbackContext discoverCallback;
+    CallbackContext onEnabledChangeCallback;
 
     private static final String TAG = "BLEPlugin";
 
     BluetoothAdapter bluetoothAdapter;
+    private BroadcastReceiver bluetoothAdapterReceiver;
 
     // key is the MAC Address
     Map<String, Peripheral> peripherals = new LinkedHashMap<String, Peripheral>();
@@ -71,6 +74,38 @@ public class BLECentralPlugin extends CordovaPlugin implements BluetoothAdapter.
             Activity activity = cordova.getActivity();
             BluetoothManager bluetoothManager = (BluetoothManager) activity.getSystemService(Context.BLUETOOTH_SERVICE);
             bluetoothAdapter = bluetoothManager.getAdapter();
+
+            // listens BluetoothAdapter state changes
+            // http://stackoverflow.com/questions/9693755/detecting-state-changes-made-to-the-bluetoothadapter
+            bluetoothAdapterReceiver = new BroadcastReceiver() {
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    final String action = intent.getAction();
+                    
+                    if (action.equals(BluetoothAdapter.ACTION_STATE_CHANGED)) {
+                        final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE,
+                                                             BluetoothAdapter.ERROR);
+                        
+                        switch (state) {
+                            case BluetoothAdapter.STATE_OFF:
+                                LOG.d(TAG, "Bluetooth off");
+                                break;
+                            case BluetoothAdapter.STATE_TURNING_OFF:
+                                LOG.d(TAG, "Turning Bluetooth off...");
+                                break;
+                            case BluetoothAdapter.STATE_ON:
+                                LOG.d(TAG, "Bluetooth on");
+                                break;
+                            case BluetoothAdapter.STATE_TURNING_ON:
+                                LOG.d(TAG, "Turning Bluetooth on...");
+                                break;
+                        }
+                    }
+                }
+            };
+
+            IntentFilter filter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
+            registerReceiver(bluetoothAdapterReceiver, filter);
         }
 
         boolean validAction = true;
@@ -148,6 +183,14 @@ public class BLECentralPlugin extends CordovaPlugin implements BluetoothAdapter.
             } else {
                 callbackContext.error("Not connected.");
             }
+
+        } else if (action.equals(ON_ENABLED_CHANGE)) {
+
+            onEnabledChangeCallback = callbackContext;
+
+            PluginResult result = new PluginResult(PluginResult.Status.NO_RESULT);
+            result.setKeepCallback(true);
+            callbackContext.sendPluginResult(result);
 
         } else {
 
