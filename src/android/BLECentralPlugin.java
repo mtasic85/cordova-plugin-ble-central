@@ -63,6 +63,9 @@ public class BLECentralPlugin extends CordovaPlugin implements BluetoothAdapter.
 
     private static final String TAG = "BLEPlugin";
 
+    private Activity mActivity;
+    private Context mContext;
+
     BluetoothAdapter bluetoothAdapter;
     private BroadcastReceiver bluetoothAdapterReceiver;
 
@@ -81,6 +84,9 @@ public class BLECentralPlugin extends CordovaPlugin implements BluetoothAdapter.
 
             // listens BluetoothAdapter state changes
             // http://stackoverflow.com/questions/9693755/detecting-state-changes-made-to-the-bluetoothadapter
+            mActivity = this.cordova.getActivity();
+            mContext = mActivity.getApplicationContext();
+
             bluetoothAdapterReceiver = new BroadcastReceiver() {
                 @Override
                 public void onReceive(Context context, Intent intent) {
@@ -107,9 +113,9 @@ public class BLECentralPlugin extends CordovaPlugin implements BluetoothAdapter.
                     }
                 }
             };
-
+            
             IntentFilter filter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
-            registerReceiver(bluetoothAdapterReceiver, filter);
+            mContext.registerReceiver(bluetoothAdapterReceiver, filter);
         }
 
         boolean validAction = true;
