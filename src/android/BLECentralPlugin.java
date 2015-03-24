@@ -411,17 +411,16 @@ public class BLECentralPlugin extends CordovaPlugin implements BluetoothAdapter.
         }
         */
         
-        Peripheral peripheral = new Peripheral(device, rssi, scanRecord);
-
         // filter by MAC
         if (macAddressFilter.size() > 0) {
-            String macAddress = peripheral.getAddress().toLowerCase();
+            String macAddress = device.getAddress().toLowerCase();
 
             if (!macAddressFilter.contains(macAddress)) {
                 return;
             }
         }
 
+        Peripheral peripheral = new Peripheral(device, rssi, scanRecord);
         peripherals.put(device.getAddress(), peripheral);
 
         if (discoverCallback != null) {
