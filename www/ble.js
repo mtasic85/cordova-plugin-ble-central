@@ -130,5 +130,9 @@ module.exports = {
     
     onEnabledChange: function (success, failure) {
         cordova.exec(success, failure, 'BLE', 'onEnabledChange', []);
+    },
+
+    setScanFilter: function (macAddresses, success, failure) {
+        cordova.exec(success, failure, 'BLE', 'setScanFilter', [macAddresses]);
     }
 };

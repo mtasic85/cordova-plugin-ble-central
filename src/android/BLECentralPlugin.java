@@ -56,6 +56,10 @@ public class BLECentralPlugin extends CordovaPlugin implements BluetoothAdapter.
     private static final String IS_ENABLED = "isEnabled";
     private static final String IS_CONNECTED  = "isConnected";
     private static final String ON_ENABLED_CHANGE  = "onEnabledChange";
+    private static final String SET_SCAN_FILTER  = "setScanFilter";
+
+    // scan filter
+    private List<String> macAddressFilter = new ArrayList<String>();
 
     // callbacks
     CallbackContext discoverCallback;
@@ -212,11 +216,24 @@ public class BLECentralPlugin extends CordovaPlugin implements BluetoothAdapter.
             }
 
         } else if (action.equals(ON_ENABLED_CHANGE)) {
-
+        
             onEnabledChangeCallback = callbackContext;
 
             PluginResult result = new PluginResult(PluginResult.Status.NO_RESULT);
             result.setKeepCallback(true);
+            callbackContext.sendPluginResult(result);
+
+        } else if (action.equals(SET_SCAN_FILTER)) {
+
+            JSONArray macAddresses = args.getJSONArray(0);
+            macAddressFilter.clear();
+
+            for (int i = 0; i < macAddresses.length(); i++) {
+                String macAddess = macAddresses.getString(i).toLowerCase();
+                macAddressFilter.add(macAddess);
+            }
+
+            PluginResult result = new PluginResult(PluginResult.Status.NO_RESULT);
             callbackContext.sendPluginResult(result);
 
         } else {
@@ -395,6 +412,16 @@ public class BLECentralPlugin extends CordovaPlugin implements BluetoothAdapter.
         */
         
         Peripheral peripheral = new Peripheral(device, rssi, scanRecord);
+
+        // filter by MAC
+        if (macAddressFilter.size() > 0) {
+            String macAddress = peripheral.getAddress().toLowerCase();
+
+            if (!macAddressFilter.contains(macAddress)) {
+                return;
+            }
+        }
+
         peripherals.put(device.getAddress(), peripheral);
 
         if (discoverCallback != null) {
