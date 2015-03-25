@@ -37,7 +37,6 @@ import android.content.BroadcastReceiver;
 import java.util.*;
 
 public class BLECentralPlugin extends CordovaPlugin implements BluetoothAdapter.LeScanCallback {
-
     // actions
     private static final String SCAN = "scan";
     private static final String STOP = "stop";
@@ -257,28 +256,26 @@ public class BLECentralPlugin extends CordovaPlugin implements BluetoothAdapter.
     }
 
     private void connect(CallbackContext callbackContext, String macAddress) {
-
         Peripheral peripheral = peripherals.get(macAddress);
+
         if (peripheral != null) {
             peripheral.connect(callbackContext, cordova.getActivity());
         } else {
             callbackContext.error("Peripheral " + macAddress + " not found.");
         }
-
     }
 
     private void disconnect(CallbackContext callbackContext, String macAddress) {
-
         Peripheral peripheral = peripherals.get(macAddress);
+
         if (peripheral != null) {
             peripheral.disconnect();
         }
-        callbackContext.success();
 
+        callbackContext.success();
     }
 
     private void read(CallbackContext callbackContext, String macAddress, UUID serviceUUID, UUID characteristicUUID) {
-
         Peripheral peripheral = peripherals.get(macAddress);
 
         if (peripheral == null) {
@@ -293,7 +290,6 @@ public class BLECentralPlugin extends CordovaPlugin implements BluetoothAdapter.
 
         //peripheral.readCharacteristic(callbackContext, serviceUUID, characteristicUUID);
         peripheral.queueRead(callbackContext, serviceUUID, characteristicUUID);
-
     }
 
     private void write(CallbackContext callbackContext, String macAddress, UUID serviceUUID, UUID characteristicUUID,
@@ -313,60 +309,45 @@ public class BLECentralPlugin extends CordovaPlugin implements BluetoothAdapter.
 
         //peripheral.writeCharacteristic(callbackContext, serviceUUID, characteristicUUID, data, writeType);
         peripheral.queueWrite(callbackContext, serviceUUID, characteristicUUID, data, writeType);
-
     }
 
     private void registerNotifyCallback(CallbackContext callbackContext, String macAddress, UUID serviceUUID, UUID characteristicUUID) {
-
         Peripheral peripheral = peripherals.get(macAddress);
+
         if (peripheral != null) {
-
-            //peripheral.setOnDataCallback(serviceUUID, characteristicUUID, callbackContext);
+            // peripheral.setOnDataCallback(serviceUUID, characteristicUUID, callbackContext);
             peripheral.queueRegisterNotifyCallback(callbackContext, serviceUUID, characteristicUUID);
-
         } else {
-
             callbackContext.error("Peripheral " + macAddress + " not found");
 
         }
-
     }
 
     private void findLowEnergyDevices(CallbackContext callbackContext, UUID[] serviceUUIDs, int scanSeconds) {
-
         // TODO skip if currently scanning
 
-        // clear non-connected cached peripherals
-        for(Iterator<Map.Entry<String, Peripheral>> iterator = peripherals.entrySet().iterator(); iterator.hasNext(); ) {
-            Map.Entry<String, Peripheral> entry = iterator.next();
-            if(!entry.getValue().isConnected()) {
-                iterator.remove();
-            }
-        }
-
         discoverCallback = callbackContext;
+
+        // FIXME:
+        // This method was deprecated in API level 21.
+        // use startScan(List, ScanSettings, ScanCallback) instead.
 
         if (serviceUUIDs.length > 0) {
             bluetoothAdapter.startLeScan(serviceUUIDs, this);
         } else {
             bluetoothAdapter.startLeScan(this);
         }
-
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                LOG.d(TAG, "Stopping Scan");
-                BLECentralPlugin.this.bluetoothAdapter.stopLeScan(BLECentralPlugin.this);
-            }
-        }, scanSeconds * 1000);
-
+        
         PluginResult result = new PluginResult(PluginResult.Status.NO_RESULT);
         result.setKeepCallback(true);
         callbackContext.sendPluginResult(result);
     }
     
     private void stop(CallbackContext callbackContext) {
+        // FIXME:
+        // This method was deprecated in API level 21.
+        // Use stopScan(ScanCallback) instead.
+
         // LOG.d(TAG, "Stopping Scan");
         // BLECentralPlugin.this.bluetoothAdapter.stopLeScan(BLECentralPlugin.this);
         this.bluetoothAdapter.stopLeScan(this);
@@ -374,7 +355,6 @@ public class BLECentralPlugin extends CordovaPlugin implements BluetoothAdapter.
     }
     
     private void listKnownDevices(CallbackContext callbackContext) {
-
         JSONArray json = new JSONArray();
 
         // do we care about consistent order? will peripherals.values() be in order?
@@ -389,7 +369,6 @@ public class BLECentralPlugin extends CordovaPlugin implements BluetoothAdapter.
 
     @Override
     public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
-
         String address = device.getAddress();
         
         /*
@@ -430,11 +409,9 @@ public class BLECentralPlugin extends CordovaPlugin implements BluetoothAdapter.
         }
 
         // TODO offer option to return duplicates
-
     }
 
     private UUID uuidFromString(String uuid) {
         return UUIDHelper.uuidFromString(uuid);
     }
-
 }
