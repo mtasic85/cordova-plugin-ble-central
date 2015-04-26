@@ -271,13 +271,13 @@
     ];
     [manager scanForPeripheralsWithServices:serviceUUIDs options:scanOptions];
     
-    if (timeoutSeconds >= 0) {
-        [NSTimer scheduledTimerWithTimeInterval:[timeoutSeconds floatValue]
-                                     target:self
-                                   selector:@selector(stopScanTimer:)
-                                   userInfo:[command.callbackId copy]
-                                    repeats:NO];
-    }
+    // if (timeoutSeconds >= 0) {
+    //     [NSTimer scheduledTimerWithTimeInterval:[timeoutSeconds floatValue]
+    //                                  target:self
+    //                                selector:@selector(stopScanTimer:)
+    //                                userInfo:[command.callbackId copy]
+    //                                 repeats:NO];
+    // }
 }
 
 - (void)isConnected:(CDVInvokedUrlCommand*)command {
