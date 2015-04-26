@@ -60,6 +60,8 @@
 - (void)onEnabledChange:(CDVInvokedUrlCommand *)command;
 - (void)_onEnabledChange;
 
+- (void)setScanFilter:(CDVInvokedUrlCommand *)command;
+
 @end
 
 #endif

@@ -311,6 +311,19 @@
     [self.commandDelegate sendPluginResult:result callbackId:callbackId];
 }
 
+- (void)setScanFilter:(CDVInvokedUrlCommand*)command {
+    NSLog(@"setScanFilter");
+    
+    NSString* callbackId = [command callbackId];
+    NSString* msg = @"true";
+    
+    CDVPluginResult* result = [CDVPluginResult
+                               resultWithStatus:CDVCommandStatus_OK
+                               messageAsString:msg];
+    
+    [self.commandDelegate sendPluginResult:result callbackId:callbackId];
+}
+
 #pragma mark - timers
 
 -(void)stopScanTimer:(NSTimer *)timer {
