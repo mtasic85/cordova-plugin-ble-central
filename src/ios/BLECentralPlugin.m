@@ -438,131 +438,131 @@
 
 #pragma mark CBPeripheralDelegate
 
-- (void)peripheral:(CBPeripheral *)peripheral didDiscoverServices:(NSError *)error {
+// - (void)peripheral:(CBPeripheral *)peripheral didDiscoverServices:(NSError *)error {
 
-    NSLog(@"didDiscoverServices");
+//     NSLog(@"didDiscoverServices");
 
-    // save the services to tell when all characteristics have been discovered
-    NSMutableSet *servicesForPeriperal = [NSMutableSet new];
-    [servicesForPeriperal addObjectsFromArray:peripheral.services];
-    [connectCallbackLatches setObject:servicesForPeriperal forKey:[peripheral uuidAsString]];
+//     // save the services to tell when all characteristics have been discovered
+//     NSMutableSet *servicesForPeriperal = [NSMutableSet new];
+//     [servicesForPeriperal addObjectsFromArray:peripheral.services];
+//     [connectCallbackLatches setObject:servicesForPeriperal forKey:[peripheral uuidAsString]];
 
-    for (CBService *service in peripheral.services) {
-        [peripheral discoverCharacteristics:nil forService:service]; // discover all is slow
-    }
-}
+//     for (CBService *service in peripheral.services) {
+//         [peripheral discoverCharacteristics:nil forService:service]; // discover all is slow
+//     }
+// }
 
-- (void)peripheral:(CBPeripheral *)peripheral didDiscoverCharacteristicsForService:(CBService *)service error:(NSError *)error {
+// - (void)peripheral:(CBPeripheral *)peripheral didDiscoverCharacteristicsForService:(CBService *)service error:(NSError *)error {
 
-    NSLog(@"didDiscoverCharacteristicsForService");
+//     NSLog(@"didDiscoverCharacteristicsForService");
 
-    NSString *peripheralUUIDString = [peripheral uuidAsString];
-    NSString *connectCallbackId = [connectCallbacks valueForKey:peripheralUUIDString];
-    NSMutableSet *latch = [connectCallbackLatches valueForKey:peripheralUUIDString];
+//     NSString *peripheralUUIDString = [peripheral uuidAsString];
+//     NSString *connectCallbackId = [connectCallbacks valueForKey:peripheralUUIDString];
+//     NSMutableSet *latch = [connectCallbackLatches valueForKey:peripheralUUIDString];
 
-    [latch removeObject:service];
+//     [latch removeObject:service];
 
-    if ([latch count] == 0) {
-        // // Call success callback for connect
-        // if (connectCallbackId) {
-        //     CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:[peripheral asDictionary]];
-        //     [pluginResult setKeepCallbackAsBool:TRUE];
-        //     [self.commandDelegate sendPluginResult:pluginResult callbackId:connectCallbackId];
-        // }
-        // [connectCallbackLatches removeObjectForKey:peripheralUUIDString];
-    }
+//     if ([latch count] == 0) {
+//         // // Call success callback for connect
+//         // if (connectCallbackId) {
+//         //     CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:[peripheral asDictionary]];
+//         //     [pluginResult setKeepCallbackAsBool:TRUE];
+//         //     [self.commandDelegate sendPluginResult:pluginResult callbackId:connectCallbackId];
+//         // }
+//         // [connectCallbackLatches removeObjectForKey:peripheralUUIDString];
+//     }
 
-    NSLog(@"Found characteristics for service %@", service);
-    for (CBCharacteristic *characteristic in service.characteristics) {
-        NSLog(@"Characteristic %@", characteristic);
-    }
+//     NSLog(@"Found characteristics for service %@", service);
+//     for (CBCharacteristic *characteristic in service.characteristics) {
+//         NSLog(@"Characteristic %@", characteristic);
+//     }
 
-}
+// }
 
-- (void)peripheral:(CBPeripheral *)peripheral didUpdateValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error {
-    //NSLog(@"didUpdateValueForCharacteristic");
+// - (void)peripheral:(CBPeripheral *)peripheral didUpdateValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error {
+//     //NSLog(@"didUpdateValueForCharacteristic");
 
-    NSString *key = [self keyForPeripheral: peripheral andCharacteristic:characteristic];
-    NSString *notifyCallbackId = [notificationCallbacks objectForKey:key];
+//     NSString *key = [self keyForPeripheral: peripheral andCharacteristic:characteristic];
+//     NSString *notifyCallbackId = [notificationCallbacks objectForKey:key];
 
-    if (notifyCallbackId) {
-        NSData *data = characteristic.value; // send RAW data to Javascript
+//     if (notifyCallbackId) {
+//         NSData *data = characteristic.value; // send RAW data to Javascript
 
-        CDVPluginResult *pluginResult = nil;
-        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsArrayBuffer:data];
-        [pluginResult setKeepCallbackAsBool:TRUE]; // keep for notification
-        [self.commandDelegate sendPluginResult:pluginResult callbackId:notifyCallbackId];
-    }
+//         CDVPluginResult *pluginResult = nil;
+//         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsArrayBuffer:data];
+//         [pluginResult setKeepCallbackAsBool:TRUE]; // keep for notification
+//         [self.commandDelegate sendPluginResult:pluginResult callbackId:notifyCallbackId];
+//     }
 
-    NSString *readCallbackId = [readCallbacks objectForKey:key];
+//     NSString *readCallbackId = [readCallbacks objectForKey:key];
 
-    if(readCallbackId) {
-        NSData *data = characteristic.value; // send RAW data to Javascript
+//     if(readCallbackId) {
+//         NSData *data = characteristic.value; // send RAW data to Javascript
 
-        CDVPluginResult *pluginResult = nil;
-        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsArrayBuffer:data];
-        [self.commandDelegate sendPluginResult:pluginResult callbackId:readCallbackId];
+//         CDVPluginResult *pluginResult = nil;
+//         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsArrayBuffer:data];
+//         [self.commandDelegate sendPluginResult:pluginResult callbackId:readCallbackId];
 
-        [readCallbacks removeObjectForKey:key];
-    }
-}
+//         [readCallbacks removeObjectForKey:key];
+//     }
+// }
 
-- (void)peripheral:(CBPeripheral *)peripheral didUpdateNotificationStateForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error {
+// - (void)peripheral:(CBPeripheral *)peripheral didUpdateNotificationStateForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error {
 
-    NSString *key = [self keyForPeripheral: peripheral andCharacteristic:characteristic];
-    NSString *notificationCallbackId = [notificationCallbacks objectForKey:key];
-    NSString *stopNotificationCallbackId = [stopNotificationCallbacks objectForKey:key];
+//     NSString *key = [self keyForPeripheral: peripheral andCharacteristic:characteristic];
+//     NSString *notificationCallbackId = [notificationCallbacks objectForKey:key];
+//     NSString *stopNotificationCallbackId = [stopNotificationCallbacks objectForKey:key];
 
-    CDVPluginResult *pluginResult = nil;
+//     CDVPluginResult *pluginResult = nil;
 
-    // we always call the stopNotificationCallbackId if we have a callback
-    // we only call the notificationCallbackId on errors and if there is no stopNotificationCallbackId
+//     // we always call the stopNotificationCallbackId if we have a callback
+//     // we only call the notificationCallbackId on errors and if there is no stopNotificationCallbackId
 
-    if (stopNotificationCallbackId) {
+//     if (stopNotificationCallbackId) {
 
-        if (error) {
-            NSLog(@"%@", error);
-            pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:[error localizedDescription]];
-        } else {
-            pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
-        }
-        [self.commandDelegate sendPluginResult:pluginResult callbackId:stopNotificationCallbackId];
-        [stopNotificationCallbacks removeObjectForKey:key];
-        [notificationCallbacks removeObjectForKey:key];
+//         if (error) {
+//             NSLog(@"%@", error);
+//             pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:[error localizedDescription]];
+//         } else {
+//             pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+//         }
+//         [self.commandDelegate sendPluginResult:pluginResult callbackId:stopNotificationCallbackId];
+//         [stopNotificationCallbacks removeObjectForKey:key];
+//         [notificationCallbacks removeObjectForKey:key];
 
-    } else if (notificationCallbackId && error) {
+//     } else if (notificationCallbackId && error) {
 
-        NSLog(@"%@", error);
-        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:[error localizedDescription]];
-        [self.commandDelegate sendPluginResult:pluginResult callbackId:notificationCallbackId];
-    }
+//         NSLog(@"%@", error);
+//         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:[error localizedDescription]];
+//         [self.commandDelegate sendPluginResult:pluginResult callbackId:notificationCallbackId];
+//     }
 
-}
+// }
 
 
-- (void)peripheral:(CBPeripheral *)peripheral didWriteValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error {
+// - (void)peripheral:(CBPeripheral *)peripheral didWriteValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error {
 
-    // This is the callback for write
+//     // This is the callback for write
 
-    NSString *key = [self keyForPeripheral: peripheral andCharacteristic:characteristic];
-    NSString *writeCallbackId = [writeCallbacks objectForKey:key];
+//     NSString *key = [self keyForPeripheral: peripheral andCharacteristic:characteristic];
+//     NSString *writeCallbackId = [writeCallbacks objectForKey:key];
 
-    if (writeCallbackId) {
-        CDVPluginResult *pluginResult = nil;
-        if (error) {
-            NSLog(@"%@", error);
-            pluginResult = [CDVPluginResult
-                resultWithStatus:CDVCommandStatus_ERROR
-                messageAsString:[error localizedDescription]
-            ];
-        } else {
-            pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
-        }
-        [self.commandDelegate sendPluginResult:pluginResult callbackId:writeCallbackId];
-        [writeCallbacks removeObjectForKey:key];
-    }
+//     if (writeCallbackId) {
+//         CDVPluginResult *pluginResult = nil;
+//         if (error) {
+//             NSLog(@"%@", error);
+//             pluginResult = [CDVPluginResult
+//                 resultWithStatus:CDVCommandStatus_ERROR
+//                 messageAsString:[error localizedDescription]
+//             ];
+//         } else {
+//             pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+//         }
+//         [self.commandDelegate sendPluginResult:pluginResult callbackId:writeCallbackId];
+//         [writeCallbacks removeObjectForKey:key];
+//     }
 
-}
+// }
 
 #pragma mark - internal implemetation
 
