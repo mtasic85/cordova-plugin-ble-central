@@ -390,7 +390,18 @@
     // NOTE: it's inefficient to discover all services
     [peripheral discoverServices:nil];
 
-    // NOTE: not calling connect success until characteristics are discovered
+    // // NOTE: not calling connect success until characteristics are discovered
+    // Call success callback for connect
+    NSString *peripheralUUIDString = [peripheral uuidAsString];
+    NSString *connectCallbackId = [connectCallbacks valueForKey:peripheralUUIDString];
+
+    if (connectCallbackId) {
+        CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:[peripheral asDictionary]];
+        [pluginResult setKeepCallbackAsBool:TRUE];
+        [self.commandDelegate sendPluginResult:pluginResult callbackId:connectCallbackId];
+    }
+
+    [connectCallbackLatches removeObjectForKey:peripheralUUIDString];
 }
 
 - (void)centralManager:(CBCentralManager *)central didDisconnectPeripheral:(CBPeripheral *)peripheral error:(NSError *)error {
@@ -452,13 +463,13 @@
     [latch removeObject:service];
 
     if ([latch count] == 0) {
-        // Call success callback for connect
-        if (connectCallbackId) {
-            CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:[peripheral asDictionary]];
-            [pluginResult setKeepCallbackAsBool:TRUE];
-            [self.commandDelegate sendPluginResult:pluginResult callbackId:connectCallbackId];
-        }
-        [connectCallbackLatches removeObjectForKey:peripheralUUIDString];
+        // // Call success callback for connect
+        // if (connectCallbackId) {
+        //     CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:[peripheral asDictionary]];
+        //     [pluginResult setKeepCallbackAsBool:TRUE];
+        //     [self.commandDelegate sendPluginResult:pluginResult callbackId:connectCallbackId];
+        // }
+        // [connectCallbackLatches removeObjectForKey:peripheralUUIDString];
     }
 
     NSLog(@"Found characteristics for service %@", service);
