@@ -164,7 +164,7 @@
         {
             pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"message was null"];
         }
-        
+
         [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
     }
 }
@@ -336,10 +336,7 @@
 
 #pragma mark - CBCentralManagerDelegate
 
-- (void)centralManager:(CBCentralManager *)central
- didDiscoverPeripheral:(CBPeripheral *)peripheral
-     advertisementData:(NSDictionary *)advertisementData
-                  RSSI:(NSNumber *)RSSI
+- (void)centralManager:(CBCentralManager *)central didDiscoverPeripheral:(CBPeripheral *)peripheral advertisementData:(NSDictionary *)advertisementData RSSI:(NSNumber *)RSSI
 {
     
     if (!discoverPeripherialCallbackId)
@@ -362,6 +359,15 @@
 - (void)centralManagerDidUpdateState:(CBCentralManager *)central
 {
     NSLog(@"Status of CoreBluetooth central manager changed %ld %@", central.state, [self centralManagerStateToString: central.state]);
+
+    if (central.state != CBCentralManagerStatePoweredOn)
+    {
+        NSLog(@"peripherals - remove all objects");
+        [peripherals removeAllObjects];
+        [peripherals release];
+        peripherals = [NSMutableDictionary new];
+    }
+    
     [self _onEnabledChange];
 }
 
