@@ -364,10 +364,9 @@
     {
         NSLog(@"peripherals - remove all objects");
         [peripherals removeAllObjects];
-        [peripherals release];
-        peripherals = [NSMutableDictionary new];
+        peripherals = [NSMutableSet new];
     }
-    
+
     [self _onEnabledChange];
 }
 
