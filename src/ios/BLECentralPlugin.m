@@ -163,6 +163,7 @@
         else
         {
             pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"message was null"];
+        }
         
         [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
     }
