@@ -48,7 +48,6 @@ function convertToNativeJS(object) {
 }
 
 module.exports = {
-
     scan: function (services, seconds, success, failure) {
         var successWrapper = function(peripheral) {
             convertToNativeJS(peripheral);
@@ -97,12 +96,6 @@ module.exports = {
     writeCommand: function (device_id, service_uuid, characteristic_uuid, value, success, failure) {
         console.log("WARNING: writeCommand is deprecated, use writeWithoutResponse");
         cordova.exec(success, failure, 'BLE', 'writeWithoutResponse', [device_id, service_uuid, characteristic_uuid, value]);
-    },
-
-    // success callback is called on notification
-    notify: function (device_id, service_uuid, characteristic_uuid, success, failure) {
-        console.log("WARNING: notify is deprecated, use startNotification");
-        cordova.exec(success, failure, 'BLE', 'startNotification', [device_id, service_uuid, characteristic_uuid]);
     },
 
     // success callback is called on notification
