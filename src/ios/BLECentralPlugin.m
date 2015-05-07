@@ -45,8 +45,6 @@
     stopNotificationCallbacks = [NSMutableDictionary new];
     
     self.onEnabledChangeCallbackId = nil;
-    
-    // self.discoveredDevices = [NSMutableDictionary new];
 }
 
 #pragma mark - Cordova Plugin Methods
