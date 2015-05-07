@@ -12,7 +12,7 @@
 
     <repo>https://github.com/don/cordova-plugin-ble-central.git</repo>
     <issue>https://github.com/don/cordova-plugin-ble-central/issues</issue>
-
+    
     <engines>
         <engine name="cordova" version=">=3.1.0" />
     </engines>
