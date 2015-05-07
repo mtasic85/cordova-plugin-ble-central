@@ -60,11 +60,6 @@ module.exports = {
         cordova.exec(success, failure, 'BLE', 'stop', []);
     },
 
-    // this will probably be removed
-    list: function (success, failure) {
-        cordova.exec(success, failure, 'BLE', 'list', []);
-    },
-
     connect: function (device_id, success, failure) {
         var successWrapper = function(peripheral) {
             convertToNativeJS(peripheral);
@@ -75,42 +70,6 @@ module.exports = {
     
     disconnect: function (device_id, success, failure) {
         cordova.exec(success, failure, 'BLE', 'disconnect', [device_id]);
-    },
-
-    // characteristic value comes back as ArrayBuffer in the success callback
-    read: function (device_id, service_uuid, characteristic_uuid, success, failure) {
-        cordova.exec(success, failure, 'BLE', 'read', [device_id, service_uuid, characteristic_uuid]);
-    },
-
-    // value must be an ArrayBuffer
-    write: function (device_id, service_uuid, characteristic_uuid, value, success, failure) {
-        cordova.exec(success, failure, 'BLE', 'write', [device_id, service_uuid, characteristic_uuid, value]);
-    },
-
-    // value must be an ArrayBuffer
-    writeWithoutResponse: function (device_id, service_uuid, characteristic_uuid, value, success, failure) {
-        cordova.exec(success, failure, 'BLE', 'writeWithoutResponse', [device_id, service_uuid, characteristic_uuid, value]);
-    },
-
-    // value must be an ArrayBuffer
-    writeCommand: function (device_id, service_uuid, characteristic_uuid, value, success, failure) {
-        console.log("WARNING: writeCommand is deprecated, use writeWithoutResponse");
-        cordova.exec(success, failure, 'BLE', 'writeWithoutResponse', [device_id, service_uuid, characteristic_uuid, value]);
-    },
-
-    // success callback is called on notification
-    startNotification: function (device_id, service_uuid, characteristic_uuid, success, failure) {
-        cordova.exec(success, failure, 'BLE', 'startNotification', [device_id, service_uuid, characteristic_uuid]);
-    },
-
-    // success callback is called when the descriptor 0x2902 is written
-    stopNotification: function (device_id, service_uuid, characteristic_uuid, success, failure) {
-        cordova.exec(success, failure, 'BLE', 'stopNotification', [device_id, service_uuid, characteristic_uuid]);
-    },
-
-    // success callback is called on indication.
-    indicate: function (device_id, service_uuid, characteristic_uuid, success, failure) {
-        cordova.exec(success, failure, 'BLE', 'indicate', [device_id, service_uuid, characteristic_uuid]);
     },
 
     isConnected: function (device_id, success, failure) {
