@@ -25,13 +25,13 @@
 #import "CBPeripheral+Extensions.h"
 
 @interface BLECentralPlugin : CDVPlugin <CBCentralManagerDelegate, CBPeripheralDelegate> {
-    NSString* discoverPeripherialCallbackId;
-    NSMutableDictionary* connectCallbacks;
-    NSMutableDictionary *readCallbacks;
-    NSMutableDictionary *writeCallbacks;
-    NSMutableDictionary *notificationCallbacks;
-    NSMutableDictionary *stopNotificationCallbacks;
-    NSMutableDictionary *connectCallbackLatches;
+    NSString * discoverPeripherialCallbackId;
+    NSMutableDictionary * connectCallbacks;
+    NSMutableDictionary * connectCallbackLatches;
+    NSMutableDictionary * readCallbacks;
+    NSMutableDictionary * writeCallbacks;
+    NSMutableDictionary * notificationCallbacks;
+    NSMutableDictionary * stopNotificationCallbacks;
 }
 
 @property (strong, nonatomic) NSMutableSet *peripherals;
